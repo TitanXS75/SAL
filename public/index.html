@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAL — AI Frontend Reconstruction Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <script>try { delete window.__REDUX_DEVTOOLS_EXTENSION__; } catch(e) {}</script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-box">SAL</span>
+          <span class="logo-text">AI CLONER</span>
+        </div>
+
+        <!-- Main Navigation Tabs -->
+        <nav class="nav-tabs" role="tablist">
+          <button class="nav-tab active" id="tabBtnClone" onclick="switchTab('clone')" role="tab" aria-selected="true">
+            <span class="tab-index">01</span>
+            <span>CLONE INTERFACE</span>
+          </button>
+          <button class="nav-tab" id="tabBtnEditor" onclick="switchTab('editor')" role="tab" aria-selected="false">
+            <span class="tab-index">02</span>
+            <span>CLONED WEBSITE &amp; AI STUDIO</span>
+            <span class="badge-dot hidden" id="editorHasProjectDot" title="Project active"></span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="header-right">
+        <!-- API Keys Quick Button -->
+        <button class="btn btn-keys" id="openKeysBtn" onclick="openKeysModal()" title="Configure Groq & Gemini API Keys">
+          <svg class="btn-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 2l-2 2m-1.5 1.5L16 7l-2 2-2-2-4 4 2 2-3 3H3v-4l7-7 2 2 1.5-1.5z"></path>
+          </svg>
+          <span class="keys-text">API KEYS</span>
+          <div class="keys-status-indicators">
+            <span class="key-indicator" id="geminiHeaderIndicator" title="Gemini Status">G</span>
+            <span class="key-indicator" id="groqHeaderIndicator" title="Groq Status">Q</span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       TAB 1: CLONE NEW WEBSITE (1-VIEW CONTROL GRID)
+       ======================================================== -->
+  <main class="main-one-view" id="tabContentClone">
+
+    <!-- 2-Column Single-View Grid -->
+    <div class="clone-grid-layout">
+
+      <!-- Left Column: Input, Targets, Extracted Tokens -->
+      <div class="clone-col-left">
+
+        <div class="swiss-panel hero-panel">
+          <div class="hero-meta-row">
+            <div class="hero-provider-tag" id="activeProviderLabel">
+              <span class="provider-dot"></span>
+              <span id="activeProviderText">ENGINE: GEMINI 1.5 FLASH</span>
+              <button class="chip-provider-switch" onclick="openKeysModal()">SWITCH</button>
+            </div>
+            <div class="hero-version-tag">AI FRONTEND AGENT</div>
+          </div>
+
+          <h1 class="hero-title-main">
+            RECONSTRUCT ANY WEBSITE.<br />
+            <span class="accent-text">SYNTHESIZED WITH AI.</span>
+          </h1>
+          <p class="hero-lead">
+            Autonomous cloner that captures any public website URL with exact assets &amp; code, previews instantly, and modifies any part of the codebase using Groq or Gemini AI prompts.
+          </p>
+
+          <!-- Large URL Input Block -->
+          <div class="url-input-block-large" id="urlCard">
+            <div class="input-row-large">
+              <div class="input-wrapper-large">
+                <span class="input-prefix-large">URL://</span>
+                <input
+                  type="url"
+                  id="urlInput"
+                  class="url-input-large"
+                  placeholder="https://tailwindcss.com"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+              </div>
+              <button id="cloneBtn" class="btn btn-primary btn-clone-hero" onclick="startClone()">
+                <span>CLONE WEBSITE</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+
+            <div class="url-examples-large">
+              <span class="examples-label">QUICK TARGETS:</span>
+              <button class="example-chip" onclick="setUrl('https://tailwindcss.com')">tailwindcss.com</button>
+              <button class="example-chip" onclick="setUrl('https://linear.app')">linear.app</button>
+              <button class="example-chip" onclick="setUrl('https://vercel.com')">vercel.com</button>
+              <button class="example-chip" onclick="setUrl('https://codectechnologies.in')">codectechnologies.in</button>
+              <button class="example-chip" onclick="setUrl('https://stripe.com')">stripe.com</button>
+            </div>
+
+            <!-- Engine Mode & Options Selector -->
+            <div class="clone-options-bar">
+              <div class="clone-mode-selector">
+                <span class="options-tag">MODE:</span>
+                <label class="mode-pill active" id="pillSimple" onclick="selectEngineMode('simple')">
+                  <input type="radio" name="engineMode" value="simple" checked hidden />
+                  <span class="pill-dot"></span>
+                  <span class="pill-title">⚡ Simple Cloner</span>
+                  <span class="pill-sub">Single Page + All Requisites (Fast)</span>
+                </label>
+                <label class="mode-pill" id="pillCrawl" onclick="selectEngineMode('crawl')">
+                  <input type="radio" name="engineMode" value="crawl" hidden />
+                  <span class="pill-dot"></span>
+                  <span class="pill-title">🕷️ Website Crawler</span>
+                  <span class="pill-sub">Internal Pages (Depth 2, Same Domain)</span>
+                </label>
+              </div>
+
+              <div class="font-toggle-wrapper">
+                <label class="font-toggle-label" title="When unchecked, skips downloading heavy font files (woff/woff2/ttf) so cloning finishes in seconds. Fonts still render online via CDN.">
+                  <input type="checkbox" id="fontDownloadToggle" />
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-title">Download Web Fonts</span>
+                  <span class="toggle-note">(Off = 10x faster via CDN)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature Ribbon -->
+          <div class="hero-features-ribbon">
+            <div class="hero-feature-item">
+              <span class="feature-num">01</span>
+              <div class="feature-text">
+                <span class="feature-heading">WGET ENGINE</span>
+                <span class="feature-sub">Full recursive HTML, CSS &amp; asset mirror</span>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <span class="feature-num">02</span>
+              <div class="feature-text">
+                <span class="feature-heading">INSTANT PREVIEW</span>
+                <span class="feature-sub">Zero-latency live static website serving</span>
+              </div>
+            </div>
+            <div class="hero-feature-item">
+              <span class="feature-num">03</span>
+              <div class="feature-text">
+                <span class="feature-heading">AI CODE MODIFIER</span>
+                <span class="feature-sub">Prompt-driven edits via Groq &amp; Gemini</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Success Notification Box (shown when complete) -->
+        <div class="swiss-panel success-card hidden" id="successCard">
+          <div class="success-badge-top">CLONE COMPLETE</div>
+          <h3 class="success-title-compact">Website Successfully Cloned</h3>
+          <p class="success-sub-compact" id="successSub">Assets, styles, scripts and HTML captured &amp; ready for editing.</p>
+          <div class="success-actions">
+            <button class="btn btn-primary btn-sm" onclick="openInEditorTab()">
+              <span>OPEN IN AI STUDIO TAB</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <a class="btn btn-outline-dark btn-sm" id="previewLink" target="_blank" href="#">
+              <span>NEW WINDOW</span>
+            </a>
+            <button class="btn btn-outline-dark btn-sm" id="copyPathBtn" onclick="copyPath()">
+              <span>COPY PATH</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Extracted UI Tokens -->
+        <div class="swiss-panel analysis-card hidden" id="analysisCard">
+          <div class="panel-header-compact">
+            <span class="panel-num">TOKENS</span>
+            <span class="panel-title">EXTRACTED DESIGN SYSTEM</span>
+          </div>
+          <div class="analysis-grid-compact" id="analysisGrid"></div>
+        </div>
+
+        <!-- Inline Quick Modify -->
+        <div class="swiss-panel modify-card hidden" id="modifyCard">
+          <div class="panel-header-compact">
+            <span class="panel-num">EDIT</span>
+            <span class="panel-title">NATURAL LANGUAGE MODIFICATION</span>
+          </div>
+          <div class="modify-examples-compact">
+            <button class="example-chip" onclick="setModify('Change headline to Welcome to My Brand')">Change headline</button>
+            <button class="example-chip" onclick="setModify('Make header background black')">Dark header</button>
+            <button class="example-chip" onclick="setModify('Change button text to Get Started Now')">Button text</button>
+            <button class="example-chip" onclick="setModify('Replace hero text with custom introduction')">Hero intro</button>
+          </div>
+          <div class="input-row" style="margin-top: 8px;">
+            <div class="input-wrapper">
+              <span class="input-prefix">PROMPT:</span>
+              <input
+                type="text"
+                id="modifyInput"
+                class="url-input"
+                placeholder="e.g. Change title to Welcome to My Brand..."
+              />
+            </div>
+            <button id="modifyBtn" class="btn btn-dark btn-sm" onclick="applyModification()">
+              <span>APPLY</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Pipeline Stages & Live Execution Log Terminal -->
+      <div class="clone-col-right">
+        <div class="swiss-panel pipeline-panel" id="progressCard">
+          <div class="panel-header-compact">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="panel-num">02 / PIPELINE</span>
+              <span class="panel-title">EXECUTION &amp; CLONING STATUS</span>
+            </div>
+            <div class="pipeline-live-indicator" id="pipelineLiveBadge">
+              <span class="pulse-dot" id="pipelinePulseDot"></span>
+              <span class="pipeline-live-text" id="pipelineLiveText">STANDBY</span>
+            </div>
+          </div>
+
+          <!-- Pipeline Stage Steps -->
+          <div class="stages-compact" id="pipelineStages">
+            <div class="stage" id="stage-scraping">
+              <span class="stage-step-num">01</span>
+              <div class="stage-info">
+                <div class="stage-name">WGET ASSET CAPTURE</div>
+                <div class="stage-desc">Recursive HTML, CSS, JavaScript, fonts, and media download</div>
+              </div>
+              <div class="stage-status"></div>
+            </div>
+
+            <div class="stage" id="stage-analyzing">
+              <span class="stage-step-num">02</span>
+              <div class="stage-info">
+                <div class="stage-name">LINK CONVERSION &amp; IMAGE FIXES</div>
+                <div class="stage-desc">Fixing encoded Next.js image paths &amp; local relative links</div>
+              </div>
+              <div class="stage-status"></div>
+            </div>
+
+            <div class="stage" id="stage-generating">
+              <span class="stage-step-num">03</span>
+              <div class="stage-info">
+                <div class="stage-name">STATIC PREVIEW ROUTING</div>
+                <div class="stage-desc">Mapping entry point &amp; Express static preview structure</div>
+              </div>
+              <div class="stage-status"></div>
+            </div>
+
+            <div class="stage" id="stage-validating">
+              <span class="stage-step-num">04</span>
+              <div class="stage-info">
+                <div class="stage-name">INTEGRITY VERIFICATION</div>
+                <div class="stage-desc">Verifying index.html and static asset tree readiness</div>
+              </div>
+              <div class="stage-status"></div>
+            </div>
+
+            <div class="stage" id="stage-preview">
+              <span class="stage-step-num">05</span>
+              <div class="stage-info">
+                <div class="stage-name">LIVE PREVIEW &amp; AI STUDIO</div>
+                <div class="stage-desc">Instant offline preview &amp; prompt-driven code modification</div>
+              </div>
+              <div class="stage-status"></div>
+            </div>
+          </div>
+
+          <!-- Real-Time Terminal Log -->
+          <div class="log-container-compact">
+            <div class="log-header">
+              <div class="log-title-wrap">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="4 17 10 11 4 5"></polyline>
+                  <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+                <span>AGENT EXECUTION LOG</span>
+              </div>
+              <div class="log-actions">
+                <button class="log-clear" onclick="clearLog()" title="Clear terminal logs">CLEAR</button>
+              </div>
+            </div>
+            <div class="log-box" id="logBox">
+              <span class="log-entry info"><span class="ts">SAL</span>System online. Enter a website URL on the left and click CLONE WEBSITE to start.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================
+       TAB 2: CHECK CURRENT CLONED WEBSITE AND EDIT VIA AI (1-VIEW SIDE-BY-SIDE STUDIO)
+       ======================================================== -->
+  <main class="main-one-view hidden" id="tabContentEditor">
+
+    <!-- Top Toolbar -->
+    <div class="editor-header-bar swiss-panel">
+      <div class="editor-bar-left">
+        <div class="editor-project-select-wrapper">
+          <label for="editorProjectSelect" class="toolbar-label">PROJECT:</label>
+          <div class="select-group">
+            <select id="editorProjectSelect" class="editor-select" onchange="onSelectProject(this.value)">
+              <option value="">(No project selected)</option>
+            </select>
+            <button class="btn-icon-square" onclick="loadProjectsList()" title="Refresh project list">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="server-status-pill" id="editorServerPill">
+          <span class="status-circle status-gray" id="editorServerDot"></span>
+          <span id="editorServerStatusText">CHECKING SERVER...</span>
+        </div>
+      </div>
+
+      <div class="editor-bar-center">
+        <!-- Responsive Viewport Switcher -->
+        <div class="device-switcher" role="group" aria-label="Viewport size">
+          <button class="device-btn active" id="btnDeviceDesktop" onclick="setDeviceView('desktop')">
+            DESKTOP
+          </button>
+          <button class="device-btn" id="btnDeviceTablet" onclick="setDeviceView('tablet')">
+            TABLET [768]
+          </button>
+          <button class="device-btn" id="btnDeviceMobile" onclick="setDeviceView('mobile')">
+            MOBILE [375]
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-bar-right">
+        <!-- View Mode: Live Preview vs Code -->
+        <div class="view-mode-toggle">
+          <button class="view-mode-btn active" id="btnModePreview" onclick="setEditorMode('preview')">
+            PREVIEW
+          </button>
+          <button class="view-mode-btn" id="btnModeCode" onclick="setEditorMode('code')">
+            CODE
+          </button>
+        </div>
+
+        <button class="btn btn-sm btn-outline-dark" id="editorRefreshBtn" onclick="reloadPreviewIframe()" title="Reload preview">
+          RELOAD
+        </button>
+        <a class="btn btn-sm btn-primary" id="editorExternalLink" target="_blank" href="#" title="Open in new window">
+          OPEN WINDOW
+        </a>
+      </div>
+    </div>
+
+    <!-- Side-by-Side 1-View Workspace: Left Preview Frame | Right AI Modification Studio -->
+    <div class="editor-side-by-side-workspace">
+
+      <!-- Left / Center: Preview Frame or Source Code Viewer -->
+      <div class="editor-viewport-column">
+
+        <!-- 1. Live Preview Viewport -->
+        <div class="preview-viewport-wrapper" id="previewContainer">
+          <div class="browser-chrome">
+            <div class="browser-dots">
+              <span class="b-dot"></span>
+              <span class="b-dot"></span>
+              <span class="b-dot"></span>
+            </div>
+            <div class="browser-address-bar">
+              <span class="ssl-tag">HTTP</span>
+              <span class="address-url" id="browserAddressText">http://localhost:3001</span>
+            </div>
+            <div class="browser-viewport-tag" id="viewportSizeTag">100% WIDE</div>
+          </div>
+
+          <div class="iframe-device-chassis device-desktop" id="deviceChassis">
+            <iframe
+              id="previewIframe"
+              class="preview-iframe"
+              src="about:blank"
+              title="Generated Website Live Preview"
+            ></iframe>
+
+            <div class="preview-empty-state" id="previewEmptyState">
+              <div class="empty-badge">[NO RECONSTRUCTION SELECTED]</div>
+              <h3>No Cloned Website Selected</h3>
+              <p>Select a generated project from the dropdown above or run a new clone in Tab 01.</p>
+              <button class="btn btn-primary btn-sm" onclick="switchTab('clone')">
+                <span>GO TO CLONE INTERFACE</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Source Code Viewer Viewport (Hidden by default) -->
+        <div class="code-viewport-wrapper hidden" id="codeContainer">
+          <div class="code-split-layout">
+            <div class="code-file-tree">
+              <div class="tree-header">PROJECT SOURCE TREE</div>
+              <div class="tree-list" id="codeFileList">
+                <div class="tree-loading">Loading files...</div>
+              </div>
+            </div>
+            <div class="code-editor-area">
+              <div class="code-editor-header">
+                <span class="active-filename" id="activeFileName">SELECT FILE</span>
+                <button class="btn-xs btn-outline-dark" onclick="copyCurrentCode()">COPY</button>
+              </div>
+              <pre class="code-pre"><code id="codeViewerContent">// Select a source file on the left to view generated React code</code></pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: AI Modification Studio (Side-by-side in 1 View) -->
+      <div class="editor-studio-column swiss-panel ai-editor-studio">
+        <div class="studio-header-compact">
+          <div class="studio-title">
+            <span class="studio-tag">AI STUDIO</span>
+            <h3>Natural Language Modification</h3>
+          </div>
+
+          <div class="studio-provider-selector">
+            <label for="studioProviderSelect">ENGINE:</label>
+            <select id="studioProviderSelect" class="select-sm">
+              <option value="gemini">Gemini</option>
+              <option value="groq">Groq</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="studio-subtext">State instructions in plain English to update components live:</p>
+
+        <!-- Quick assignment prompt chips -->
+        <div class="studio-chips-compact">
+          <button class="example-chip chip-action" onclick="setStudioPrompt('Make the navbar sticky')">Make navbar sticky</button>
+          <button class="example-chip chip-action" onclick="setStudioPrompt('Change the primary color to blue')">Color to blue</button>
+          <button class="example-chip chip-action" onclick="setStudioPrompt('Add a testimonials section')">Add testimonials</button>
+          <button class="example-chip chip-action" onclick="setStudioPrompt('Replace the hero section with a bakery hero')">Bakery hero</button>
+          <button class="example-chip chip-action" onclick="setStudioPrompt('Remove the pricing section')">Remove pricing</button>
+          <button class="example-chip chip-action" onclick="setStudioPrompt('Make the hero section full screen height')">Full-screen hero</button>
+        </div>
+
+        <!-- Instruction Input Row -->
+        <div class="studio-input-block">
+          <div class="input-wrapper">
+            <span class="input-prefix">PROMPT:</span>
+            <input
+              type="text"
+              id="studioPromptInput"
+              class="url-input"
+              placeholder="e.g. Change primary color to blue..."
+              autocomplete="off"
+            />
+          </div>
+          <button id="studioApplyBtn" class="btn btn-primary btn-sm" onclick="applyStudioModification()" style="margin-top: 6px; width: 100%;">
+            <span>APPLY AI EDIT</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="13 17 18 12 13 7"></polyline>
+              <polyline points="6 17 11 12 6 7"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Studio Modification Live Log / History -->
+        <div class="studio-history-label">MODIFICATION LOG</div>
+        <div class="studio-history-compact" id="studioHistoryBox">
+          <div class="history-placeholder">Applied instructions and patched files will appear here.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================
+       API KEYS CONFIGURATION MODAL
+       ======================================================== -->
+  <div class="modal-overlay hidden" id="apiKeysModal" onclick="closeModalOnBackdrop(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="modal-tag">CONFIG</span>
+          <div>
+            <h3>API Keys &amp; Providers</h3>
+            <p>Directly provide your Groq and Google Gemini keys. Saved locally and dynamically injected.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeKeysModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Default Engine Selector -->
+        <div class="form-group">
+          <label class="form-label">DEFAULT AI ENGINE</label>
+          <div class="provider-radio-group">
+            <label class="provider-radio-card" id="radioCardGemini">
+              <input type="radio" name="defaultProvider" value="gemini" id="providerGeminiRadio" checked onchange="updateProviderCardStyles()" />
+              <div class="provider-card-content">
+                <div class="provider-card-title">GOOGLE GEMINI</div>
+                <div class="provider-card-desc">Vision analysis + fast multi-modal synthesis (gemini-1.5-flash)</div>
+              </div>
+            </label>
+
+            <label class="provider-radio-card" id="radioCardGroq">
+              <input type="radio" name="defaultProvider" value="groq" id="providerGroqRadio" onchange="updateProviderCardStyles()" />
+              <div class="provider-card-content">
+                <div class="provider-card-title">GROQ LPU</div>
+                <div class="provider-card-desc">Ultra-fast inference engine (llama-3.1-8b-instant)</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- 1. Gemini API Key Input -->
+        <div class="form-group key-box">
+          <div class="key-box-header">
+            <label class="form-label" for="geminiKeyInput">
+              <span>GEMINI API KEY</span>
+              <span class="key-badge" id="geminiStatusBadge">NOT CONFIGURED</span>
+            </label>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="link-external">
+              FREE KEY [GOOGLE AI STUDIO] &rarr;
+            </a>
+          </div>
+
+          <div class="input-with-actions">
+            <input
+              type="password"
+              id="geminiKeyInput"
+              class="form-input mono-font"
+              placeholder="AIzaSy..."
+              autocomplete="off"
+            />
+            <button class="btn-input-action" onclick="toggleKeyVisibility('geminiKeyInput')" title="Toggle view">SHOW</button>
+            <button class="btn btn-sm btn-outline-dark" id="testGeminiBtn" onclick="testKey('gemini')">
+              TEST KEY
+            </button>
+          </div>
+          <div class="key-feedback" id="geminiFeedback"></div>
+        </div>
+
+        <!-- 2. Groq API Key Input -->
+        <div class="form-group key-box">
+          <div class="key-box-header">
+            <label class="form-label" for="groqKeyInput">
+              <span>GROQ API KEY</span>
+              <span class="key-badge" id="groqStatusBadge">NOT CONFIGURED</span>
+            </label>
+            <a href="https://console.groq.com/keys" target="_blank" class="link-external">
+              FREE KEY [GROQ CONSOLE] &rarr;
+            </a>
+          </div>
+
+          <div class="input-with-actions">
+            <input
+              type="password"
+              id="groqKeyInput"
+              class="form-input mono-font"
+              placeholder="gsk_..."
+              autocomplete="off"
+            />
+            <button class="btn-input-action" onclick="toggleKeyVisibility('groqKeyInput')" title="Toggle view">SHOW</button>
+            <button class="btn btn-sm btn-outline-dark" id="testGroqBtn" onclick="testKey('groq')">
+              TEST KEY
+            </button>
+          </div>
+          <div class="key-feedback" id="groqFeedback"></div>
+        </div>
+
+        <!-- Model selection details -->
+        <details class="advanced-settings">
+          <summary>ADVANCED MODEL SPECIFICATIONS</summary>
+          <div class="settings-grid">
+            <div class="form-group">
+              <label class="form-sublabel">GEMINI MODEL</label>
+              <select id="geminiModelSelect" class="form-input">
+                <option value="gemini-1.5-flash">gemini-1.5-flash (Standard)</option>
+                <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+                <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-sublabel">GROQ MODEL</label>
+              <select id="groqModelSelect" class="form-input">
+                <option value="openai/gpt-oss-120b" selected>openai/gpt-oss-120b (120B Fast &amp; Powerful)</option>
+                <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Fast)</option>
+                <option value="qwen/qwen3.8-27b">qwen/qwen3.8-27b (27B)</option>
+                <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+                <option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
+              </select>
+            </div>
+          </div>
+        </details>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline-dark" onclick="closeKeysModal()">CANCEL</button>
+        <button class="btn btn-primary" id="saveKeysBtn" onclick="saveApiKeys()">
+          <span>SAVE &amp; APPLY KEYS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

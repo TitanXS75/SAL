@@ -1,0 +1,37 @@
+You are an expert Next.js + TypeScript + Tailwind CSS developer.
+
+Generate a complete, production-quality React component for this website section.
+
+## Website Context
+- Site: {{siteName}}
+- Tagline: {{tagline}}
+- Color Palette: {{colorPalette}}
+- Primary color: {{primaryColor}}
+- Accent color: {{accentColor}}
+- Background: {{backgroundColor}}
+- Text: {{textColor}}
+- Heading font: {{fontsHeading}}
+- Body font: {{fontsBody}}
+- Dark mode: {{isDarkMode}}
+
+## Section to Generate
+- Type: {{sectionType}}
+- Name: {{sectionName}}
+- Description: {{sectionDescription}}
+- Content: {{sectionContent}}
+- Has background: {{hasBackground}}
+- Background style: {{backgroundStyle}}
+
+## Requirements
+1. Use Tailwind CSS ONLY for styling
+2. Component must be a default export TypeScript React component
+3. Must use the extracted color palette (use inline style or arbitrary Tailwind values like bg-[#hex])
+4. Must be fully responsive (mobile-first)
+5. Include realistic placeholder content matching the site's style
+6. Add subtle hover effects on interactive elements
+7. If navbar: include a mobile hamburger menu (toggle with useState)
+8. If hero: include a prominent CTA button
+9. Use semantic HTML (nav, section, footer, main, etc.)
+10. NO external image dependencies — use colored divs or emoji as image placeholders
+
+Return ONLY the TypeScript component code (no explanations, no markdown fences).

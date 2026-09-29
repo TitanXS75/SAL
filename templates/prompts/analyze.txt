@@ -1,0 +1,64 @@
+You are an expert frontend developer and UI analyst.
+
+Analyze this website screenshot and HTML structure, then return a structured JSON description for recreating the UI as a Next.js frontend.
+
+## Website Info
+- URL: {{url}}
+- Title: {{title}}
+- Description: {{description}}
+
+## Detected Navigation Links
+{{navLinks}}
+
+## Detected Headings
+{{headings}}
+
+## Detected Sections (from DOM)
+{{sections}}
+
+## Detected Colors (computed)
+{{colors}}
+
+## Detected Fonts
+{{fonts}}
+
+## HTML Snippet
+```html
+{{html}}
+```
+
+Return ONLY a valid JSON object following this schema:
+{
+  "siteName": "string - website brand name",
+  "tagline": "string - main value proposition or subtitle",
+  "colorPalette": ["#hex1", "#hex2", "#hex3", "#hex4", "#hex5"],
+  "backgroundColor": "#hex",
+  "textColor": "#hex",
+  "accentColor": "#hex",
+  "fonts": {
+    "heading": "font family name",
+    "body": "font family name"
+  },
+  "layout": "string - brief description of overall layout",
+  "sections": [
+    {
+      "type": "navbar|hero|features|about|pricing|testimonials|cta|footer|custom",
+      "name": "string - component name e.g. Navbar, HeroSection",
+      "description": "string - what this section contains and looks like",
+      "content": {
+        "heading": "string or null",
+        "subheading": "string or null",
+        "cta": "string or null",
+        "items": ["list of items if applicable"],
+        "navLinks": ["list of nav links if navbar"]
+      },
+      "hasBackground": true,
+      "backgroundStyle": "gradient|solid|image|transparent"
+    }
+  ],
+  "components": ["list of reusable component names e.g. Button, Card, Badge"],
+  "isResponsive": true,
+  "isDarkMode": true,
+  "hasAnimation": false,
+  "googleFontsUrl": "full Google Fonts import URL or null"
+}
