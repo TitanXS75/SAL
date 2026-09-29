@@ -29,12 +29,68 @@ let configState = {
 document.addEventListener('DOMContentLoaded', () => {
   initLocalKeys();
   loadConfig();
-  loadProjectsList();
+
+  // Restore input URL
+  const savedUrl = localStorage.getItem('sal_input_url');
+  const urlInput = document.getElementById('urlInput');
+  if (urlInput) {
+    if (savedUrl) urlInput.value = savedUrl;
+    urlInput.addEventListener('input', (e) => {
+      try { localStorage.setItem('sal_input_url', e.target.value); } catch (err) {}
+    });
+  }
+
+  // Restore device view
+  const savedDevice = localStorage.getItem('sal_active_device');
+  if (savedDevice && ['desktop', 'tablet', 'mobile'].includes(savedDevice)) {
+    setDeviceView(savedDevice);
+  }
+
+  // Restore editor mode (preview vs code)
+  const savedEditorMode = localStorage.getItem('sal_active_editor_mode');
+  if (savedEditorMode && ['preview', 'code'].includes(savedEditorMode)) {
+    setEditorMode(savedEditorMode);
+  }
+
+  // Restore active tab (URL hash takes precedence, then localStorage)
+  const hashTab = window.location.hash ? window.location.hash.replace('#', '') : null;
+  const savedTab = (hashTab === 'clone' || hashTab === 'editor') ? hashTab : localStorage.getItem('sal_active_tab');
+
+  const savedProject = localStorage.getItem('sal_active_project');
+  if (savedProject) {
+    currentProjectName = savedProject;
+  }
+
+  if (savedTab === 'editor') {
+    switchTab('editor', false);
+  } else {
+    switchTab('clone', false);
+  }
+
+  loadProjectsList(savedProject);
+});
+
+// React to browser back/forward or hash changes
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash === 'editor' || hash === 'clone') {
+    if (activeTab !== hash) switchTab(hash, false);
+  }
 });
 
 // ── Tab Management ─────────────────────────────────────────────────────────
-function switchTab(tabId) {
+function switchTab(tabId, updateUrl = true) {
   activeTab = tabId;
+  try {
+    localStorage.setItem('sal_active_tab', tabId);
+    if (updateUrl && window.location.hash !== `#${tabId}`) {
+      try {
+        history.replaceState(null, '', `#${tabId}`);
+      } catch (e) {
+        window.location.hash = tabId;
+      }
+    }
+  } catch (e) {}
 
   const btnClone = document.getElementById('tabBtnClone');
   const btnEditor = document.getElementById('tabBtnEditor');
@@ -64,7 +120,7 @@ function switchTab(tabId) {
     // If current project exists, ensure it is selected
     if (currentProjectName) {
       const select = document.getElementById('editorProjectSelect');
-      if (select.value !== currentProjectName) {
+      if (select && select.value !== currentProjectName) {
         select.value = currentProjectName;
         onSelectProject(currentProjectName);
       }
@@ -423,21 +479,10 @@ function clearTerminal() {
 }
 
 // ── Engine Mode Selection ───────────────────────────────────────────────
-let selectedEngineMode = 'simple';
+const selectedEngineMode = 'simple';
 
 function selectEngineMode(mode) {
-  selectedEngineMode = mode;
-  const pillSimple = document.getElementById('pillSimple');
-  const pillCrawl = document.getElementById('pillCrawl');
-  if (pillSimple && pillCrawl) {
-    if (mode === 'crawl') {
-      pillCrawl.classList.add('active');
-      pillSimple.classList.remove('active');
-    } else {
-      pillSimple.classList.add('active');
-      pillCrawl.classList.remove('active');
-    }
-  }
+  // Direct Cloner is active
 }
 
 // ── Clone Flow ─────────────────────────────────────────────────────────────
@@ -456,6 +501,9 @@ function startClone() {
       showToast('Please enter a valid URL (e.g. https://tailwindcss.com)', 'error');
       return;
     }
+
+    // Save input URL to localStorage
+    try { localStorage.setItem('sal_input_url', url); } catch (e) {}
 
     // Request browser desktop notification permission on user action
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
@@ -478,11 +526,7 @@ function startClone() {
     }
 
     const provider = configState.preferredProvider || 'groq';
-    const downloadFonts = Boolean(document.getElementById('fontDownloadToggle')?.checked);
-    const mode = selectedEngineMode || 'simple';
-    const modeName = mode === 'crawl' ? 'Site Crawler' : 'Simple Cloner';
-
-    appendLog(`🚀 Starting ${modeName} for: ${url} using ${provider.toUpperCase()}`, 'info');
+    appendLog(`🚀 Starting Cloner for: ${url} using ${provider.toUpperCase()}`, 'info');
 
     socket.emit('clone_request', {
       url,
@@ -490,8 +534,8 @@ function startClone() {
       provider,
       model: provider === 'groq' ? configState.preferredGroqModel : configState.preferredGeminiModel,
       apiKeys: getActiveApiKeys(),
-      mode,
-      downloadFonts
+      mode: 'simple',
+      downloadFonts: false
     });
   } catch (err) {
     console.error('startClone error:', err);
@@ -616,7 +660,8 @@ async function loadProjectsList(selectedName) {
       select.appendChild(opt);
     });
 
-    const targetProject = selectedName || currentProjectName || projects[0]?.name;
+    const savedProject = localStorage.getItem('sal_active_project');
+    const targetProject = selectedName || (savedProject && projects.some(p => p.name === savedProject) ? savedProject : null) || currentProjectName || projects[0]?.name;
     if (targetProject) {
       select.value = targetProject;
       onSelectProject(targetProject);
@@ -633,6 +678,7 @@ async function onSelectProject(projectName) {
   }
 
   currentProjectName = projectName;
+  try { localStorage.setItem('sal_active_project', projectName); } catch (e) {}
   showEmptyPreviewState(false);
 
   // Check or start preview server
@@ -710,6 +756,7 @@ function updateEditorServerStatus(isRunning, port) {
 // ── Responsive Viewport Switcher ───────────────────────────────────────────
 function setDeviceView(device) {
   activeDevice = device;
+  try { localStorage.setItem('sal_active_device', device); } catch (e) {}
   const chassis = document.getElementById('deviceChassis');
   const tag = document.getElementById('viewportSizeTag');
 
@@ -734,6 +781,7 @@ function setDeviceView(device) {
 // ── Source Code Explorer ───────────────────────────────────────────────────
 function setEditorMode(mode) {
   activeEditorMode = mode;
+  try { localStorage.setItem('sal_active_editor_mode', mode); } catch (e) {}
   const btnPrev = document.getElementById('btnModePreview');
   const btnCode = document.getElementById('btnModeCode');
   const previewWrap = document.getElementById('previewContainer');
@@ -833,8 +881,12 @@ function copyCurrentCode() {
 
 // ── UI Helpers ─────────────────────────────────────────────────────────────
 function setUrl(url) {
-  document.getElementById('urlInput').value = url;
-  document.getElementById('urlInput').focus();
+  const input = document.getElementById('urlInput');
+  if (input) {
+    input.value = url;
+    input.focus();
+    try { localStorage.setItem('sal_input_url', url); } catch (e) {}
+  }
 }
 
 function setModify(text) {

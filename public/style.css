@@ -454,7 +454,7 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 12px;
   background: var(--bg-subtle);
   border: 1px solid var(--border);
