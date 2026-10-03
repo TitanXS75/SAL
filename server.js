@@ -5,6 +5,7 @@ const { Server } = require('socket.io');
 const path = require('path');
 const cors = require('cors');
 
+const { ZipArchive } = require('archiver');
 const agent = require('./agent/index');
 
 const app = express();
@@ -19,6 +20,7 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 // Serve generated project preview (proxied or static)
 app.use('/preview', express.static(path.join(__dirname, 'output')));
@@ -127,6 +129,28 @@ app.get('/api/projects', (req, res) => {
   }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   res.json(projects);
+});
+
+// REST endpoint: download full project as ZIP directly into user's device
+app.get('/api/projects/:projectName/download', async (req, res) => {
+  const { projectName } = req.params;
+  const projectDir = path.join(__dirname, 'output', projectName);
+  if (!await fse.pathExists(projectDir)) {
+    return res.status(404).json({ error: 'Project not found' });
+  }
+
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', `attachment; filename="${projectName}.zip"`);
+
+  const archive = new ZipArchive({ zlib: { level: 6 } });
+  archive.on('error', (err) => {
+    console.error('[Archive Error]', err);
+    if (!res.headersSent) res.status(500).json({ error: err.message });
+  });
+
+  archive.pipe(res);
+  archive.directory(projectDir, false);
+  archive.finalize();
 });
 
 // REST endpoint: get source file tree for a project

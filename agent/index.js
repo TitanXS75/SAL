@@ -90,6 +90,7 @@ async function clone(io, socket, { url, sessionId, provider, model, apiKeys, mod
       projectName,
       outputDir,
       previewUrl,
+      downloadUrl: `/api/projects/${projectName}/download`,
       previewPort: port,
       elapsed,
       entryFile: downloadResult.entryFile,
