@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SAL — Download Any Website to Your Device</title>
-  <meta name="description" content="Minimalist Apple-inspired tool to download any website directly to your device as an offline ZIP archive with full HTML, CSS, JS, and media." />
-  
+  <meta name="description"
+    content="Minimalist Apple-inspired tool to download any website directly to your device as an offline ZIP archive with full HTML, CSS, JS, and media." />
+
   <!-- Apple & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
 
   <!-- Relative stylesheet for GitHub Pages & Localhost -->
   <link rel="stylesheet" href="./style.css" />
@@ -25,25 +29,32 @@
   <!-- Socket.io client (works when running with Node server, gracefully skipped on GitHub Pages) -->
   <script src="/socket.io/socket.io.js" onerror="console.info('[Engine] Running in Static/GitHub Pages Mode')"></script>
 </head>
+
 <body>
 
   <!-- Minimal Apple-Style Header -->
   <header class="header">
     <div class="header-inner">
-      <div class="logo-wrap" onclick="switchMainTab('download')">
-        <div class="logo-icon">S</div>
-        <div class="logo-title">SAL</div>
-        <span class="logo-badge">DOWNLOADER</span>
+      <div class="logo-wrap" onclick="switchMainTab('download')" title="SAL Home">
+        <span class="logo-title">SAL</span>
       </div>
 
       <!-- Navigation Segmented Tabs -->
       <nav class="header-nav-tabs">
         <button type="button" class="nav-tab active" id="tabBtnDownload" onclick="switchMainTab('download')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
           <span>Downloader</span>
         </button>
         <button type="button" class="nav-tab" id="tabBtnEditor" onclick="switchMainTab('editor')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
           <span>Studio &amp; Editor</span>
           <span class="badge-dot hidden" id="editorDot"></span>
         </button>
@@ -60,7 +71,9 @@
         <button class="header-btn" onclick="openSettingsModal()" title="AI API Keys & Settings">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
           </svg>
           <span>AI Keys</span>
         </button>
@@ -82,7 +95,8 @@
           <span class="hero-gradient">Saved straight to your device.</span>
         </h1>
         <p class="hero-subtitle">
-          Enter any public URL to capture its full HTML, CSS, JavaScript, and assets into an offline .ZIP archive on your computer.
+          Enter any public URL to capture its full HTML, CSS, JavaScript, and assets into an offline .ZIP archive on
+          your computer.
         </p>
       </section>
 
@@ -93,19 +107,13 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+              </path>
             </svg>
           </div>
 
-          <input
-            type="url"
-            id="urlInput"
-            class="url-input"
-            placeholder="https://example.com"
-            autocomplete="off"
-            spellcheck="false"
-            required
-          />
+          <input type="url" id="urlInput" class="url-input" placeholder="https://example.com" autocomplete="off"
+            spellcheck="false" required />
 
           <button type="submit" id="downloadBtn" class="btn-download-primary">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -123,7 +131,8 @@
           <button type="button" class="suggestion-chip" onclick="setUrl('https://apple.com')">apple.com</button>
           <button type="button" class="suggestion-chip" onclick="setUrl('https://linear.app')">linear.app</button>
           <button type="button" class="suggestion-chip" onclick="setUrl('https://stripe.com')">stripe.com</button>
-          <button type="button" class="suggestion-chip" onclick="setUrl('https://tailwindcss.com')">tailwindcss.com</button>
+          <button type="button" class="suggestion-chip"
+            onclick="setUrl('https://tailwindcss.com')">tailwindcss.com</button>
           <button type="button" class="suggestion-chip" onclick="setUrl('https://vercel.com')">vercel.com</button>
         </div>
 
@@ -182,11 +191,15 @@
         </div>
 
         <h2 class="success-headline">Website Downloaded to Your Device</h2>
-        <p class="success-sub" id="successSubText">The offline website archive was packaged and saved to your Downloads folder.</p>
+        <p class="success-sub" id="successSubText">The offline website archive was packaged and saved to your Downloads
+          folder.</p>
 
         <div class="project-meta-pill">
           <div class="meta-item">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
             <span id="metaFileName">website.zip</span>
           </div>
           <span>•</span>
@@ -201,7 +214,11 @@
 
         <div class="success-buttons">
           <button type="button" class="btn-download-primary" id="openStudioBtn" onclick="openCurrentProjectInStudio()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
             <span>Open in Studio &amp; Editor</span>
           </button>
 
@@ -244,9 +261,12 @@
 
             <div class="safari-controls">
               <div class="device-segmented">
-                <button type="button" class="device-seg-btn active" id="btnDevDesktop" onclick="setDeviceView('desktop')">Desktop</button>
-                <button type="button" class="device-seg-btn" id="btnDevTablet" onclick="setDeviceView('tablet')">Tablet</button>
-                <button type="button" class="device-seg-btn" id="btnDevMobile" onclick="setDeviceView('mobile')">Mobile</button>
+                <button type="button" class="device-seg-btn active" id="btnDevDesktop"
+                  onclick="setDeviceView('desktop')">Desktop</button>
+                <button type="button" class="device-seg-btn" id="btnDevTablet"
+                  onclick="setDeviceView('tablet')">Tablet</button>
+                <button type="button" class="device-seg-btn" id="btnDevMobile"
+                  onclick="setDeviceView('mobile')">Mobile</button>
               </div>
 
               <a class="header-btn" id="openExternalBtn" target="_blank" href="#" title="Open in new window">
@@ -260,12 +280,8 @@
           </div>
 
           <div class="preview-body" id="previewBody">
-            <iframe
-              id="previewIframe"
-              class="preview-iframe"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-              title="Website Live Preview"
-            ></iframe>
+            <iframe id="previewIframe" class="preview-iframe"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups" title="Website Live Preview"></iframe>
           </div>
         </div>
       </div>
@@ -287,7 +303,10 @@
               <option value="">(Select a cloned website)</option>
             </select>
             <button type="button" class="btn-icon" onclick="loadProjectsList()" title="Refresh projects list">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
             </button>
           </div>
         </div>
@@ -295,30 +314,46 @@
         <div class="toolbar-center">
           <!-- Device Switcher -->
           <div class="device-segmented">
-            <button type="button" class="device-seg-btn active" id="btnEditorDesktop" onclick="setEditorDevice('desktop')">Desktop</button>
-            <button type="button" class="device-seg-btn" id="btnEditorTablet" onclick="setEditorDevice('tablet')">Tablet</button>
-            <button type="button" class="device-seg-btn" id="btnEditorMobile" onclick="setEditorDevice('mobile')">Mobile</button>
+            <button type="button" class="device-seg-btn active" id="btnEditorDesktop"
+              onclick="setEditorDevice('desktop')">Desktop</button>
+            <button type="button" class="device-seg-btn" id="btnEditorTablet"
+              onclick="setEditorDevice('tablet')">Tablet</button>
+            <button type="button" class="device-seg-btn" id="btnEditorMobile"
+              onclick="setEditorDevice('mobile')">Mobile</button>
           </div>
         </div>
 
         <div class="toolbar-right">
           <!-- View mode: Live Preview vs Code -->
           <div class="device-segmented">
-            <button type="button" class="device-seg-btn active" id="btnModePreview" onclick="setEditorMode('preview')">Preview</button>
+            <button type="button" class="device-seg-btn active" id="btnModePreview"
+              onclick="setEditorMode('preview')">Preview</button>
             <button type="button" class="device-seg-btn" id="btnModeCode" onclick="setEditorMode('code')">Code</button>
           </div>
 
-          <button type="button" class="header-btn" onclick="downloadSelectedProjectZip()" id="editorDownloadZipBtn" title="Download ZIP to device">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <button type="button" class="header-btn" onclick="downloadSelectedProjectZip()" id="editorDownloadZipBtn"
+            title="Download ZIP to device">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
             <span>Download .ZIP</span>
           </button>
 
           <button type="button" class="header-btn" onclick="reloadEditorIframe()" title="Reload preview">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
           </button>
 
           <a class="header-btn" id="editorOpenWindowLink" target="_blank" href="#" title="Open in new window">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
           </a>
         </div>
       </div>
@@ -338,7 +373,10 @@
                 <span class="w-dot green"></span>
               </div>
               <div class="safari-address-bar">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
                 <span class="safari-address-text" id="editorAddressBarText">http://localhost:4000</span>
               </div>
               <div style="font-size: 11px; color: var(--apple-text-secondary);" id="editorSizeTag">100% WIDE</div>
@@ -347,10 +385,18 @@
             <div class="editor-iframe-chassis device-desktop" id="editorIframeChassis">
               <iframe id="editorMainIframe" class="preview-iframe" src="about:blank" title="Website Preview"></iframe>
               <div class="preview-empty-state" id="editorEmptyState">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--apple-text-tertiary); margin-bottom: 12px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  style="color: var(--apple-text-tertiary); margin-bottom: 12px;">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
                 <div style="font-size: 16px; font-weight: 600; margin-bottom: 6px;">No Website Selected</div>
-                <div style="font-size: 13px; color: var(--apple-text-secondary); max-width: 320px; text-align: center; margin-bottom: 16px;">Select a project from the top dropdown or download a new website in the Downloader tab.</div>
-                <button type="button" class="btn-download-primary" onclick="switchMainTab('download')">Go to Downloader</button>
+                <div
+                  style="font-size: 13px; color: var(--apple-text-secondary); max-width: 320px; text-align: center; margin-bottom: 16px;">
+                  Select a project from the top dropdown or download a new website in the Downloader tab.</div>
+                <button type="button" class="btn-download-primary" onclick="switchMainTab('download')">Go to
+                  Downloader</button>
               </div>
             </div>
           </div>
@@ -371,7 +417,8 @@
                   <span class="code-current-filename" id="codeCurrentFilename">Select a file</span>
                   <button type="button" class="header-btn" onclick="copyCurrentCode()">Copy Code</button>
                 </div>
-                <pre class="code-display"><code id="codeText">// Click a source file on the left to inspect its code</code></pre>
+                <pre
+                  class="code-display"><code id="codeText">// Click a source file on the left to inspect its code</code></pre>
               </div>
             </div>
           </div>
@@ -382,8 +429,10 @@
         <div class="editor-ai-panel">
           <div class="ai-panel-header">
             <div style="display:flex; align-items:center; gap:8px;">
-              <div class="logo-icon" style="width:22px; height:22px; font-size:11px;">AI</div>
-              <span style="font-size:14px; font-weight:600;">AI Code Studio</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--apple-blue);">
+                <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
+              </svg>
+              <span style="font-size:15px; font-weight:600;">AI Code Studio</span>
             </div>
             <select id="studioProviderSelect" class="apple-select-sm">
               <option value="gemini">Gemini</option>
@@ -391,34 +440,40 @@
             </select>
           </div>
 
-          <div style="font-size:12px; color:var(--apple-text-secondary); margin-bottom:12px;">Prompt AI to modify headers, styling, components, or content:</div>
+          <div style="font-size:12px; color:var(--apple-text-secondary); margin-bottom:12px;">Prompt AI to modify
+            headers, styling, components, or content:</div>
 
           <!-- Quick assignment prompt chips -->
           <div class="studio-prompt-chips">
-            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Change primary color to blue')">Color to blue</button>
-            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Make header background black')">Dark header</button>
-            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Add a customer testimonials section')">Add testimonials</button>
-            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Change headline to Welcome to My Brand')">Change headline</button>
-            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Remove footer credits')">Clean footer</button>
+            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Change primary color to blue')">Color to
+              blue</button>
+            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Make header background black')">Dark
+              header</button>
+            <button type="button" class="prompt-chip"
+              onclick="setStudioPrompt('Add a customer testimonials section')">Add testimonials</button>
+            <button type="button" class="prompt-chip"
+              onclick="setStudioPrompt('Change headline to Welcome to My Brand')">Change headline</button>
+            <button type="button" class="prompt-chip" onclick="setStudioPrompt('Remove footer credits')">Clean
+              footer</button>
           </div>
 
           <div class="studio-input-box">
-            <input
-              type="text"
-              id="studioPromptInput"
-              class="studio-input"
+            <input type="text" id="studioPromptInput" class="studio-input"
               placeholder="e.g. Make hero section dark and add CTA button..."
-              onkeydown="if(event.key === 'Enter') applyStudioModification();"
-            />
-            <button type="button" class="btn-download-primary" id="studioApplyBtn" onclick="applyStudioModification()" style="width:100%; justify-content:center; margin-top:8px;">
+              onkeydown="if(event.key === 'Enter') applyStudioModification();" />
+            <button type="button" class="btn-download-primary" id="studioApplyBtn" onclick="applyStudioModification()"
+              style="width:100%; justify-content:center; margin-top:8px;">
               <span>Apply AI Edit</span>
             </button>
           </div>
 
           <div class="studio-history-section">
-            <div style="font-size:11px; font-weight:600; color:var(--apple-text-secondary); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Activity &amp; Changes</div>
+            <div
+              style="font-size:11px; font-weight:600; color:var(--apple-text-secondary); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">
+              Activity &amp; Changes</div>
             <div class="studio-history-list" id="studioHistoryList">
-              <div style="color:var(--apple-text-tertiary); font-size:12px; font-style:italic;">Applied modifications and updated files will appear here.</div>
+              <div style="color:var(--apple-text-tertiary); font-size:12px; font-style:italic;">Applied modifications
+                and updated files will appear here.</div>
             </div>
           </div>
 
@@ -469,4 +524,5 @@
   <!-- Relative Javascript for GitHub Pages & Localhost -->
   <script src="./app.js"></script>
 </body>
+
 </html>
